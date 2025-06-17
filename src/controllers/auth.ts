@@ -1,15 +1,21 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { prismaCilent } from '..'
 import { hashSync, compareSync } from 'bcrypt'
 import * as jwt from 'jsonwebtoken'
 import { JWT_SECRET } from '../secrets'
+import { brException } from '../exceptions/bad_requests'
+import { Ecode } from '../exceptions/root'
 
-export const signup = async (req: Request, res: Response) => {
+export const signup = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const { email, password, name } = req.body
 
 	let user = await prismaCilent.user.findFirst({ where: { email } })
 	if (user) {
-		throw Error('User already exists!')
+		next(new brException('User already exists', Ecode.USER_ALREADY_EXISTS))
 	}
 	user = await prismaCilent.user.create({
 		data: {
@@ -26,7 +32,7 @@ export const login = async (req: Request, res: Response) => {
 
 	let user = await prismaCilent.user.findFirst({ where: { email } })
 	if (!user) {
-		throw Error('User does not exists!')
+		throw Error('User does not exists')
 	}
 	if (!compareSync(password, user.password)) {
 		throw Error('Incorrect password!')
