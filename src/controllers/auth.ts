@@ -6,7 +6,7 @@ import { JWT_SECRET } from '../secrets'
 import { brException } from '../exceptions/bad_requests'
 import { Ecode } from '../exceptions/root'
 import { UnproccesableEntity } from '../exceptions/validation'
-import { signupSchema } from '../schema/users'
+import { signupSchema, loginSchema } from '../schema/users'
 
 export const signup = async (
 	req: Request,
@@ -40,21 +40,37 @@ export const signup = async (
 	}
 }
 
-export const login = async (req: Request, res: Response) => {
-	const { email, password } = req.body
+export const login = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		loginSchema.parse(req.body)
 
-	let user = await prismaCilent.user.findFirst({ where: { email } })
-	if (!user) {
-		throw Error('User does not exists')
+		const { email, password } = req.body
+
+		const user = await prismaCilent.user.findFirst({ where: { email } })
+		if (!user) {
+			return next(new brException('User not found', Ecode.USER_NOT_FOUND))
+		}
+
+		if (!compareSync(password, user.password)) {
+			return next(
+				new brException('Incorrect password', Ecode.INCORRECT_PASSWORD)
+			)
+		}
+
+		const token = jwt.sign({ userId: user.id }, JWT_SECRET)
+
+		res.json({ user, token })
+	} catch (err: any) {
+		next(
+			new UnproccesableEntity(
+				err?.issues,
+				'Unprocessable Entity',
+				Ecode.UNPROCCESABLE_ENTITY
+			)
+		)
 	}
-	if (!compareSync(password, user.password)) {
-		throw Error('Incorrect password!')
-	}
-	const token = jwt.sign(
-		{
-			userId: user.id,
-		},
-		JWT_SECRET
-	)
-	res.json({ user, token })
 }
