@@ -5,26 +5,39 @@ import * as jwt from 'jsonwebtoken'
 import { JWT_SECRET } from '../secrets'
 import { brException } from '../exceptions/bad_requests'
 import { Ecode } from '../exceptions/root'
+import { UnproccesableEntity } from '../exceptions/validation'
+import { signupSchema } from '../schema/users'
 
 export const signup = async (
 	req: Request,
 	res: Response,
 	next: NextFunction
 ) => {
-	const { email, password, name } = req.body
+	try {
+		signupSchema.parse(req.body)
+		const { email, password, name } = req.body
 
-	let user = await prismaCilent.user.findFirst({ where: { email } })
-	if (user) {
-		next(new brException('User already exists', Ecode.USER_ALREADY_EXISTS))
+		let user = await prismaCilent.user.findFirst({ where: { email } })
+		if (user) {
+			next(new brException('User already exists', Ecode.USER_ALREADY_EXISTS))
+		}
+		user = await prismaCilent.user.create({
+			data: {
+				name,
+				email,
+				password: hashSync(password, 10),
+			},
+		})
+		res.json(user)
+	} catch (err: any) {
+		next(
+			new UnproccesableEntity(
+				err?.issues,
+				'Unpocessable Entity',
+				Ecode.UNPROCCESABLE_ENTITY
+			)
+		)
 	}
-	user = await prismaCilent.user.create({
-		data: {
-			name,
-			email,
-			password: hashSync(password, 10),
-		},
-	})
-	res.json(user)
 }
 
 export const login = async (req: Request, res: Response) => {
