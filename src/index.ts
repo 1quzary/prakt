@@ -14,5 +14,5 @@ export const prismaCilent = new PrismaClient({ log: ['query'] })
 app.use(errorMiddleware)
 
 app.listen(PORT, () => {
-	console.log('App Working!')
+  console.log('App Working!')
 })

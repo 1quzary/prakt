@@ -1,31 +1,42 @@
 {
-	"name": "prakt",
-	"version": "1.0.0",
-	"main": "index.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "npx nodemon"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"description": "",
-	"devDependencies": {
-		"@types/bcrypt": "^5.0.2",
-		"@types/express": "^5.0.3",
-		"@types/jsonwebtoken": "^9.0.10",
-		"@types/node": "^24.0.3",
-		"nodemon": "^3.1.10",
-		"ts-node": "^10.9.2",
-		"typescript": "^5.8.3"
-	},
-	"dependencies": {
-		"@prisma/client": "^6.9.0",
-		"bcrypt": "^6.0.0",
-		"dotenv": "^16.5.0",
-		"express": "^5.1.0",
-		"jsonwebtoken": "^9.0.2",
-		"prisma": "^6.9.0",
-		"zod": "^3.25.67"
-	}
+  "name": "prakt",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx nodemon",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.34.1",
+    "@typescript-eslint/parser": "^8.34.1",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.5.0",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.5.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "^6.9.0",
+    "zod": "^3.25.67"
+  }
 }
