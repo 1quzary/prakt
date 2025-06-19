@@ -1,18 +1,20 @@
-import express, { Express, Request, Response } from 'express'
+import express, { Express } from 'express'
 import { PORT } from './configs/secrets'
 import rootRouter from './routes'
-import { PrismaClient } from '@prisma/client'
+import { prismaClient, connectToDatabase } from './configs/prisma'
 import { errorMiddleware } from './middlewares/errors'
 
 const app: Express = express()
 
 app.use(express.json())
-
 app.use('/api', rootRouter)
-
-export const prismaCilent = new PrismaClient({ log: ['query'] })
 app.use(errorMiddleware)
 
-app.listen(PORT, () => {
-  console.log('App Working!')
-})
+async function startServer() {
+  await connectToDatabase()
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`)
+  })
+}
+
+startServer()

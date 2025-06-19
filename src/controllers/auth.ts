@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { prismaCilent } from '..'
+import { prismaClient } from '../configs/prisma'
 import { hashSync, compareSync } from 'bcrypt'
 import * as jwt from 'jsonwebtoken'
 import { JWT_SECRET } from '../configs/secrets'
@@ -13,11 +13,11 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
     signupSchema.parse(req.body)
     const { email, password, name } = req.body
 
-    let user = await prismaCilent.user.findFirst({ where: { email } })
+    let user = await prismaClient.user.findFirst({ where: { email } })
     if (user) {
       next(new brException('User already exists', Ecode.USER_ALREADY_EXISTS))
     }
-    user = await prismaCilent.user.create({
+    user = await prismaClient.user.create({
       data: {
         name,
         email,
@@ -36,7 +36,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
     const { email, password } = req.body
 
-    const user = await prismaCilent.user.findFirst({ where: { email } })
+    const user = await prismaClient.user.findFirst({ where: { email } })
     if (!user) {
       return next(new brException('User not found', Ecode.USER_NOT_FOUND))
     }
