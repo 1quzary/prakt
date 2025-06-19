@@ -16,6 +16,5 @@ export class Exception extends Error {
 export enum Ecode {
   USER_ALREADY_EXISTS = 1,
   UNPROCCESABLE_ENTITY = 2,
-  USER_NOT_FOUND = 3,
-  INCORRECT_PASSWORD = 4,
+  INVALID_CREDENTIALS = 3,
 }

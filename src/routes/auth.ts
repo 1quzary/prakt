@@ -1,9 +1,11 @@
 import { Router } from 'express'
-import { login, signup } from '../controllers/auth'
+import { signup, login } from '../controllers/auth'
+import { signupSchema, loginSchema } from '../schema/users'
+import { validateBody } from '../middlewares/validate'
 
-const authRoutes: Router = Router()
+const authRoutes = Router()
 
-authRoutes.post('/signup', signup)
-authRoutes.post('/login', login)
+authRoutes.post('/signup', validateBody(signupSchema), signup)
+authRoutes.post('/login', validateBody(loginSchema), login)
 
 export default authRoutes
